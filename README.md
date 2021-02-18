@@ -7,4 +7,4 @@
 4. Navigate to the folder containing the bot in your command line.
 5. Run the command "python bot.py" in your command line to run the bot.
 
-If you are just running the bot on your computer, terminate using the <ctrl>C hotkey, otherwise terminate like you would any other program.
+If you are just running the bot on your computer, terminate using the Control key and C hotkey, otherwise terminate like you would any other program.
