@@ -2,6 +2,7 @@
 ## Authors
 
 * Raymond Zheng
+* Hunter Spack
 ## Bot Set Up
 
 1. Run the command "pip install -U discord.py" in your command line.
