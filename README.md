@@ -4,6 +4,7 @@
 * Raymond Zheng
 * Hunter Spack
 * Drew Marcotte
+* Joe Marchesini
 ## Bot Set Up
 
 1. Run the command "pip install -U discord.py" in your command line.
