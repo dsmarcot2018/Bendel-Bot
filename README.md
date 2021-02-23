@@ -23,7 +23,7 @@ If you are just running the bot on your computer, terminate using the Control ke
 - Bendel-Bot will share a random meme on command from their personal stash 
 
 **User Currency Balance**
-- Each member of the server will be able to earn Bendel-Bucks(BBs) and have access to their Bendal-Ballance where they can view how many BBs they have.
+- Each member of the server will be able to earn Bendel-Bucks(BBs) and have access to their Bendal-Balance where they can view how many BBs they have.
 - Members will be able to spend Bendel-Bucks on a number of different activities
 
 **Slot Machine**
