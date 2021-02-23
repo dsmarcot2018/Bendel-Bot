@@ -32,3 +32,8 @@ If you are just running the bot on your computer, terminate using the Control ke
 ## Features that are less certain to be featured
 **Bendel-Buck Leaderboard**
 - Run a command to see the top Bendel-Buck earners on the server
+
+# New Dice Roll Feature
+
+- Added support for rolling dice via the Die class. This class expects an integer as a parameter:
+new_die = Die(20)
