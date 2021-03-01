@@ -3,6 +3,7 @@
 # test.py
 import os
 import random
+import getpass
 
 import discord
 from dotenv import load_dotenv
@@ -22,6 +23,15 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 # client = discord.Client()
 
 
+# bot say's hi once joined
+@bot.event
+async def send_joined_message():
+    channel = bot.get_channel(809191274976247851)
+    await channel.send("Bendel-Bot is online! (Brought online by:" +
+                       getpass.getuser() + ")")
+    await channel.send("What's up gamers?")
+
+
 @bot.event
 async def on_ready():
     guild = discord.utils.get(bot.guilds, name=GUILD)
@@ -31,6 +41,7 @@ async def on_ready():
     )
     members = '\n - '.join([member.name for member in guild.members])
     print(f'Guild Members:\n - {members}')
+    await send_joined_message()
 
 
 # Welcome message code
@@ -52,7 +63,7 @@ async def on_member_join(member):
                             member.mention + " is a Mercy main",
                             member.mention + " is a Junkrat main"]
 
-    # sets the channel to the welcome channel
+    # sets the channel to the welcome (general) channel
     channel = bot.get_channel(809191274976247851)
 
     # sets the message to one of the choices
