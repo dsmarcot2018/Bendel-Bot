@@ -1,6 +1,6 @@
 # code tutorial for starting up the bot was @
 # https://realpython.com/how-to-make-a-discord-bot-python/
-# test.py
+# bot.py
 import os
 import random
 import getpass
