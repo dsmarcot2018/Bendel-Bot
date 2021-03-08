@@ -71,22 +71,26 @@ async def on_member_join(member):
     await channel.send(response)
 
 
-@bot.command(name="Welcome")
-async def welcome(ctx):
-    print(f"welcome heard")
+@bot.command(name="roll")
+async def roll(ctx, die: str):
+    try:
+        num_of_dice, die_sides = die.split("d")
+        print(num_of_dice)
+        print(die_sides)
+        int(num_of_dice)
+        int(die_sides)
+    except ValueError:
+        await ctx.send("Error enter ints \nuse command  like !roll 2d20")
+        return
 
-    # old/
-    # if message.author == client.user:
-    #    return
-    # if message.content == '!Welcome':
-    #   response = "Howdy"
-    # await message.channel.send(response)
-    # elif message.content == 'raise-exception':
-    # raise discord.DiscordException
-    # old/
+    i = 0
+    while i < int(num_of_dice):
+        roll_result = str(random.randint(1, int(die_sides)))
+        i += 1
+        await ctx.send("Rolling: d" + str(die_sides) +
+                       "\nRolled: " + str(roll_result))
 
-    response = f"Howdy {ctx.author}"
-    await ctx.send(response)
+    return
 
 
 bot.run(TOKEN)
