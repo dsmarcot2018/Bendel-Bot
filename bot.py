@@ -4,6 +4,7 @@
 import os
 import random
 import getpass
+import constants
 
 import discord
 from dotenv import load_dotenv
@@ -19,6 +20,7 @@ GUILD = os.getenv('DISCORD_GUILD')
 # GENERAL_TXT_CHANNEL = os.getenv('DISCORD_GENERAL_CHANNEL_ID')
 
 bot = commands.Bot(command_prefix='!', intents=intents)
+
 
 # client = discord.Client()
 
@@ -41,6 +43,7 @@ async def on_ready():
     )
     members = '\n - '.join([member.name for member in guild.members])
     print(f'Guild Members:\n - {members}')
+    bot.reaction_roles = []
     await send_joined_message()
 
 
@@ -64,7 +67,7 @@ async def on_member_join(member):
                             member.mention + " is a Junkrat main"]
 
     # sets the channel to the welcome (general) channel
-    channel = bot.get_channel(809191274976247851)
+    channel = bot.get_channel(816385919019647016)
 
     # sets the message to one of the choices
     response = random.choice(welcome_message_list)
@@ -87,6 +90,41 @@ async def welcome(ctx):
 
     response = f"Howdy {ctx.author}"
     await ctx.send(response)
+
+
+@bot.event
+async def on_member_join(member):
+    user = bot.get_user(member.id)
+    await user.send(constants.RULES_MSG)
+
+
+@bot.event
+async def on_raw_reaction_add(payload):
+    for role, msg, emoji in bot.reaction_roles:
+        if msg.id == payload.message_id and emoji == payload.emoji.name:
+            await payload.member.add_roles(role)
+
+
+@bot.event
+async def on_raw_reaction_remove(payload):
+    print(payload)
+    for role, msg, emoji in bot.reaction_roles:
+        if msg.id == payload.message_id and emoji == payload.emoji.name:
+            await bot.get_guild(payload.guild_id). \
+                get_member(payload.user_id). \
+                remove_roles(role)
+
+
+@bot.command(name="roleset")
+"""Usage: !roleset (Role Name) (msg id to react to) (Emoji)"""
+async def role_set(ctx, role: discord.Role = None,
+                   msg: discord.Message = None,
+                   emoji=None):
+    if role is not None and msg is not None and emoji is not None:
+        await msg.add_reaction(emoji)
+        bot.reaction_roles.append((role, msg, emoji))
+    else:
+        await ctx.send("Invalid Arguments")
 
 
 bot.run(TOKEN)
