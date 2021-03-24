@@ -43,6 +43,8 @@ async def on_ready():
     )
     members = '\n - '.join([member.name for member in guild.members])
     print(f'Guild Members:\n - {members}')
+    # This is the list containing a tuple holding (role, msg, emoji)
+    # for react roles functionality
     bot.reaction_roles = []
     await send_joined_message()
 
@@ -78,50 +80,54 @@ async def on_member_join(member):
 async def welcome(ctx):
     print(f"welcome heard")
 
-    # old/
-    # if message.author == client.user:
-    #    return
-    # if message.content == '!Welcome':
-    #   response = "Howdy"
-    # await message.channel.send(response)
-    # elif message.content == 'raise-exception':
-    # raise discord.DiscordException
-    # old/
-
     response = f"Howdy {ctx.author}"
     await ctx.send(response)
 
 
 @bot.event
 async def on_member_join(member):
+    """Bot will send new member server rules."""
+
     user = bot.get_user(member.id)
     await user.send(constants.RULES_MSG)
 
 
 @bot.event
 async def on_raw_reaction_add(payload):
+    """Add role on reaction to message."""
+
+    # Loop through list of tuple to make sure msg_id and emoji name match
     for role, msg, emoji in bot.reaction_roles:
         if msg.id == payload.message_id and emoji == payload.emoji.name:
+            # Api call to add role
             await payload.member.add_roles(role)
 
 
 @bot.event
 async def on_raw_reaction_remove(payload):
-    print(payload)
+    """Remove role on remove reaction to message."""
+
+    # Loop through list of tuple to make sure msg_id and emoji name match
     for role, msg, emoji in bot.reaction_roles:
         if msg.id == payload.message_id and emoji == payload.emoji.name:
+            # Api call to remove role
             await bot.get_guild(payload.guild_id). \
                 get_member(payload.user_id). \
                 remove_roles(role)
 
 
 @bot.command(name="roleset")
-"""Usage: !roleset (Role Name) (msg id to react to) (Emoji)"""
 async def role_set(ctx, role: discord.Role = None,
                    msg: discord.Message = None,
                    emoji=None):
+    """The command used in Discord to configure which message is the target.
+
+    Usage: !roleset (Role Name) (msg id to react to) (Emoji)"""
+
+    # Error handling for command
     if role is not None and msg is not None and emoji is not None:
         await msg.add_reaction(emoji)
+        # Appending to the tuple in on_ready()
         bot.reaction_roles.append((role, msg, emoji))
     else:
         await ctx.send("Invalid Arguments")
