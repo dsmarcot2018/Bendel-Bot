@@ -93,6 +93,11 @@ async def welcome(ctx):
     await ctx.send(response)
 
 
+# Plays music provided by the user.
+# example !play youtube_link vc
+# @param youtube_link - A link to a youtube video that you would like
+#        to play through the bot.
+# @param vc - The voice channel you would like the bot to join.
 @bot.command()
 async def play(ctx, url : str, channel):
     song_there = os.path.isfile("song.mp3")
@@ -103,8 +108,8 @@ async def play(ctx, url : str, channel):
         await ctx.send("Wait for the current playing music to end or use the 'stop' command")
         return
 
-    voiceChannel = discord.utils.get(ctx.guild.voice_channels, name=channel)
-    await voiceChannel.connect()
+    voice_channel = discord.utils.get(ctx.guild.voice_channels, name=channel)
+    await voice_channel.connect()
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
 
     ydl_opts = {
@@ -123,36 +128,48 @@ async def play(ctx, url : str, channel):
     voice.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source="song.mp3"))
 
 
+# Leaves the voice channel it is connected to.
+# Only leaves if it is connected and will send an error message if not.
 @bot.command()
 async def leave(ctx):
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-    if voice.is_connected():
+    try:
         await voice.disconnect()
-    else:
+    except AttributeError:
         await ctx.send("Bot is not connected to a voice channel.")
 
 
+# Pauses the audio that is currently playing.
+# Only pauses if it is connected and playing and will send an error message if not.
 @bot.command()
 async def pause(ctx):
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-    if voice.is_playing():
+    try:
         voice.pause()
-    else:
-        await ctx.send("Bot is not playing.")
+    except AttributeError:
+        await ctx.send("Bot cannot be paused at this moment.")
 
 
+# Resumes paused audio.
+# Only resumes if it is connected and paused and will send an error message if not.
 @bot.command()
 async def resume(ctx):
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-    if voice.is_paused():
+    try:
         voice.resume()
-    else:
-        await ctx.sent("Audio is not paused")
+    except AttributeError:
+        await ctx.send("Bot cannot be resumed at this moment.")
 
 
+# Stops the audio.
+# Only stops if it is connected and will send an error message if not.
 @bot.command()
 async def stop(ctx):
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-    voice.stop()
+
+    try:
+        voice.stop()
+    except AttributeError:
+        await ctx.send("Bot cannot be stopped at this moment.")
 
 bot.run(TOKEN)
