@@ -4,7 +4,9 @@
 import os
 import random
 import getpass
-
+import bendelbucks
+import constants
+from datetime import datetime, timedelta
 import discord
 from dotenv import load_dotenv
 
@@ -22,11 +24,13 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 
 # client = discord.Client()
 
+# Initializing BendelBucks class
+bb = bendelbucks.BendelBucks()
 
 # bot say's hi once joined
 @bot.event
 async def send_joined_message():
-    channel = bot.get_channel(809191274976247851)
+    channel = bot.get_channel(816385919019647016)
     await channel.send("Bendel-Bot is online! (Brought online by:" +
                        getpass.getuser() + ")")
     await channel.send("What's up gamers?")
@@ -48,7 +52,7 @@ async def on_ready():
 @bot.event
 async def on_member_join(member):
     print(f"{member.name} Joined the server")
-
+    bb.create_user(member.id)
     # list contains the possible welcome strings and @ mention
     welcome_message_list = ["Howdy " + member.mention,
                             "Welcome aboard " + member.mention,
@@ -92,5 +96,9 @@ async def roll(ctx, die: str):
 
     return
 
+@bot.command(name="hourly")
+async def hourly(ctx):
+    await ctx.send(bb.add_balance(ctx.author.id, 100, "Hourly"))
 
 bot.run(TOKEN)
+
