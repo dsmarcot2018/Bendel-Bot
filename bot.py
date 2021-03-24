@@ -36,7 +36,9 @@ async def send_joined_message():
 
 @bot.event
 async def on_ready():
-    guild = discord.utils.get(bot.guilds, name=GUILD)
+    for guild in bot.guilds:
+        if guild.name == GUILD:
+            break
     print(
         f'{bot.user.name} is connected to the following guild:\n'
         f'{guild.name}(id: {guild.id})'
@@ -93,34 +95,32 @@ async def welcome(ctx):
 
 @bot.command()
 async def play(ctx, url : str, channel):
-    """Code heavily based off of code done in this youtube video https://www.youtube.com/watch?v=ml-5tXRmmFk"""
     song_there = os.path.isfile("song.mp3")
     try:
         if song_there:
             os.remove("song.mp3")
     except PermissionError:
-        await ctx.send("Wait for the current song to end or use the stop command")
+        await ctx.send("Wait for the current playing music to end or use the 'stop' command")
         return
 
-    voice_channel = discord.utils.get(ctx.guild.voice_channels, name=channel)
-    await voice_channel.connect()
-
+    voiceChannel = discord.utils.get(ctx.guild.voice_channels, name=channel)
+    await voiceChannel.connect()
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
 
     ydl_opts = {
         'format': 'bestaudio/best',
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
-            'prefferedcodec': 'mp3',
-            'prefferedquality': '192',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
         }],
     }
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([url])
+    ydl = youtube_dl.YoutubeDL(ydl_opts)
+    ydl.download([url])
     for file in os.listdir("./"):
         if file.endswith(".mp3"):
             os.rename(file, "song.mp3")
-    voice.play(discord.FFmpegPCMAudio("song.mp3"))
+    voice.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source="song.mp3"))
 
 
 @bot.command()
