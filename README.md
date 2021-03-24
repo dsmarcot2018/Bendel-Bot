@@ -5,20 +5,39 @@
 * Hunter Spack
 * Drew Marcotte
 * Joe Marchesini
-## Bot Set Up
 
+## Bot Set Up
 1. Run the command "pip install -U discord.py" in your command line.
 2. Run the command "pip install -U python-dotenv" in your command line.
-3. Create a .env file with a token provided by one of the developers and put this text in it in this format: DISCORD_TOKEN=PROVIDED_TOKEN
-4. Navigate to the folder containing the bot in your command line.
-5. Run the command "python bot.py" in your command line to run the bot.
+3. Run the command "pip install --upgrade youtube_dl" in your command line.
+4. Run the command "pip install PyNaCl" in your command line.
+5. Create a .env file with a token provided by one of the developers and put this text in it in this format: DISCORD_TOKEN=PROVIDED_TOKEN
+6. Navigate to the folder containing the bot in your command line.
+7. Run the command "python bot.py" in your command line to run the bot.
 
 If you are just running the bot on your computer, terminate using the Control key and C hotkey, otherwise terminate like you would any other program.
 
-## Planned Bot Features
+## Features
 **Welcome Messages**
-- Bendel-Bot will give new server members a warm welcome with any one of 15+ welcome messages
+- Bendel-Bot gives new server members a warm welcome with any one of 15+ welcome messages
 
+**Music**
+- Plays music through the bot using youtube-dl
+- Commands
+  - !play youtube-link vc
+    - @param youtube-link - A link to the youtube video that you would like to play.
+    - @param vc - The exact name of the vc you would like the bot to join.
+    - Plays a youtube link's audio through the bot.
+  - !pause
+    - Pauses the audio.
+  - !resume
+    - Resumes paused audio.
+  - !stop
+    - Stops the audio, but leaves the bot in the channel.
+  - !leave
+    - Leaves the vc and stops the audio.
+
+## Planned Bot Features
 **Meme Delivery**
 - Bendel-Bot will share a random meme on command from their personal stash 
 
