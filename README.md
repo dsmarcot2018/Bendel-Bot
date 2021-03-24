@@ -48,6 +48,10 @@ If you are just running the bot on your computer, terminate using the Control ke
 **Slot Machine**
 - One of those planned activities is Bendel-Bot's slot machine where server members will be able to spend BBs to give it a spin to try and win more BBs
 
+**Music**
+- Adding a queuing feature.
+- Removing the vc param for !play and making the bot join the vc of the user who used the command.
+
 ## Features that are less certain to be featured
 **Bendel-Buck Leaderboard**
 - Run a command to see the top Bendel-Buck earners on the server
