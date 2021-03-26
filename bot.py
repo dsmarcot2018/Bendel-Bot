@@ -109,7 +109,12 @@ async def play(ctx, url : str, channel):
         return
 
     voice_channel = discord.utils.get(ctx.guild.voice_channels, name=channel)
-    await voice_channel.connect()
+
+    try:
+        await voice_channel.connect()
+    except discord.errors.ClientException:
+        pass
+
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
 
     ydl_opts = {
