@@ -46,6 +46,9 @@ async def on_ready():
     )
     members = '\n - '.join([member.name for member in guild.members])
     print(f'Guild Members:\n - {members}')
+    # This is the list containing a tuple holding (role, msg, emoji)
+    # for react roles functionality
+    bot.reaction_roles = []
     await send_joined_message()
 
 
