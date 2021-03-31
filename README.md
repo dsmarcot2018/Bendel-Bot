@@ -19,6 +19,9 @@ If you are just running the bot on your computer, terminate using the Control ke
 **Welcome Messages**
 - Bendel-Bot gives new server members a warm welcome with any one of 15+ welcome messages
 
+**Meme Machine**
+- You can run the command !meme in chat and you will get a random image back from out github
+
 ## Planned Bot Features
 **Meme Delivery**
 - Bendel-Bot will share a random meme on command from their personal stash 
