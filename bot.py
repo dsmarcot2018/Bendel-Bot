@@ -16,7 +16,8 @@ intents.members = True
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
-# GENERAL_TXT_CHANNEL = os.getenv('DISCORD_GENERAL_CHANNEL_ID')
+GENERAL_TXT_CHANNEL = os.getenv('DISCORD_GENERAL_CHANNEL_ID')
+BTEST_TXT_CHANNEL = os.getenv('DISCORD_BTEST_CHANNEL_ID')
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
@@ -26,7 +27,7 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 # bot say's hi once joined
 @bot.event
 async def send_joined_message():
-    channel = bot.get_channel(809191274976247851)
+    channel = bot.get_channel(int(BTEST_TXT_CHANNEL))
     await channel.send("Bendel-Bot is online! (Brought online by:" +
                        getpass.getuser() + ")")
     await channel.send("What's up gamers?")
@@ -64,7 +65,7 @@ async def on_member_join(member):
                             member.mention + " is a Junkrat main"]
 
     # sets the channel to the welcome (general) channel
-    channel = bot.get_channel(809191274976247851)
+    channel = bot.get_channel(int(GENERAL_TXT_CHANNEL))
 
     # sets the message to one of the choices
     response = random.choice(welcome_message_list)
@@ -84,11 +85,12 @@ async def roll(ctx, die: str):
         return
 
     i = 0
+    roll_result = 0
     while i < int(num_of_dice):
-        roll_result = str(random.randint(1, int(die_sides)))
+        roll_result += random.randint(1, int(die_sides))
         i += 1
-        await ctx.send("Rolling: d" + str(die_sides) +
-                       "\nRolled: " + str(roll_result))
+    await ctx.send("Rolling: " + str(num_of_dice) + "d" + str(die_sides) +
+                   "\nRolled: " + str(roll_result))
 
     return
 
