@@ -4,6 +4,7 @@
 import os
 import random
 import getpass
+import constants
 import youtube_dl
 
 import discord
@@ -180,5 +181,47 @@ async def stop(ctx):
         voice.stop()
     except AttributeError:
         await ctx.send("Bot cannot be stopped at this moment.")
+        
 
+@bot.event
+async def on_raw_reaction_add(payload):
+    """Add role on reaction to message."""
+
+    # Loop through list of tuple to make sure msg_id and emoji name match
+    for role, msg, emoji in bot.reaction_roles:
+        if msg.id == payload.message_id and emoji == payload.emoji.name:
+            # Api call to add role
+            await payload.member.add_roles(role)
+
+
+@bot.event
+async def on_raw_reaction_remove(payload):
+    """Remove role on remove reaction to message."""
+
+    # Loop through list of tuple to make sure msg_id and emoji name match
+    for role, msg, emoji in bot.reaction_roles:
+        if msg.id == payload.message_id and emoji == payload.emoji.name:
+            # Api call to remove role
+            await bot.get_guild(payload.guild_id). \
+                get_member(payload.user_id). \
+                remove_roles(role)
+
+
+@bot.command(name="roleset")
+async def role_set(ctx, role: discord.Role = None,
+                   msg: discord.Message = None,
+                   emoji=None):
+    """The command used in Discord to configure which message is the target.
+
+    Usage: !roleset (Role Name) (msg id to react to) (Emoji)"""
+
+    # Error handling for command
+    if role is not None and msg is not None and emoji is not None:
+        await msg.add_reaction(emoji)
+        # Appending to the tuple in on_ready()
+        bot.reaction_roles.append((role, msg, emoji))
+    else:
+        await ctx.send("Invalid Arguments")
+
+        
 bot.run(TOKEN)
