@@ -4,6 +4,7 @@
 import os
 import random
 import getpass
+import constants
 import requests
 
 import discord
@@ -21,6 +22,7 @@ GUILD = os.getenv('DISCORD_GUILD')
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+
 # client = discord.Client()
 
 
@@ -35,15 +37,16 @@ async def send_joined_message():
 
 @bot.event
 async def on_ready():
-    for guild in bot.guilds:
-        if guild.name == GUILD:
-            break
+    guild = discord.utils.get(bot.guilds, name=GUILD)
     print(
         f'{bot.user.name} is connected to the following guild:\n'
         f'{guild.name}(id: {guild.id})'
     )
     members = '\n - '.join([member.name for member in guild.members])
     print(f'Guild Members:\n - {members}')
+    # This is the list containing a tuple holding (role, msg, emoji)
+    # for react roles functionality
+    bot.reaction_roles = []
     await send_joined_message()
 
 
@@ -67,7 +70,7 @@ async def on_member_join(member):
                             member.mention + " is a Junkrat main"]
 
     # sets the channel to the welcome (general) channel
-    channel = bot.get_channel(809191274976247851)
+    channel = bot.get_channel(816385919019647016)
 
     # sets the message to one of the choices
     response = random.choice(welcome_message_list)
@@ -95,7 +98,56 @@ async def roll(ctx, die: str):
 
     return
 
+  
+@bot.event
+async def on_member_join(member):
+    """Bot will send new member server rules."""
 
+    user = bot.get_user(member.id)
+    await user.send(constants.RULES_MSG)
+
+
+@bot.event
+async def on_raw_reaction_add(payload):
+    """Add role on reaction to message."""
+
+    # Loop through list of tuple to make sure msg_id and emoji name match
+    for role, msg, emoji in bot.reaction_roles:
+        if msg.id == payload.message_id and emoji == payload.emoji.name:
+            # Api call to add role
+            await payload.member.add_roles(role)
+
+
+@bot.event
+async def on_raw_reaction_remove(payload):
+    """Remove role on remove reaction to message."""
+
+    # Loop through list of tuple to make sure msg_id and emoji name match
+    for role, msg, emoji in bot.reaction_roles:
+        if msg.id == payload.message_id and emoji == payload.emoji.name:
+            # Api call to remove role
+            await bot.get_guild(payload.guild_id). \
+                get_member(payload.user_id). \
+                remove_roles(role)
+
+
+@bot.command(name="roleset")
+async def role_set(ctx, role: discord.Role = None,
+                   msg: discord.Message = None,
+                   emoji=None):
+    """The command used in Discord to configure which message is the target.
+
+    Usage: !roleset (Role Name) (msg id to react to) (Emoji)"""
+
+    # Error handling for command
+    if role is not None and msg is not None and emoji is not None:
+        await msg.add_reaction(emoji)
+        # Appending to the tuple in on_ready()
+        bot.reaction_roles.append((role, msg, emoji))
+    else:
+        await ctx.send("Invalid Arguments")
+        
+        
 @bot.command(name="meme")
 async def meme_machine(ctx):
     # The number of images has to be set each time a new image is added.
@@ -115,5 +167,5 @@ async def meme_machine(ctx):
     else:
         await ctx.send(link)
 
-
+        
 bot.run(TOKEN)

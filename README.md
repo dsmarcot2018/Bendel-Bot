@@ -26,6 +26,11 @@ If you are just running the bot on your computer, terminate using the Control ke
 **Welcome Messages**
 - Bendel-Bot gives new server members a warm welcome with any one of 15+ welcome messages
 
+**React Roles**
+- React to a message with an emoji to assign yourself a role.
+- Use !roleset (Role Name) (msg id to react to) (Emoji) to configure.
+- Ex. !roleset dev 824395559791755374 :thumbsup:
+
 **Meme Machine**
 - You can run the command !meme in chat and you will get a random image back from out github
 
