@@ -5,14 +5,20 @@
 * Hunter Spack
 * Drew Marcotte
 * Joe Marchesini
+
+## Pip Installs
+
+In the command line you must run each of these pip installs for all the required packages:
+
+1. "pip install -U discord.py"
+2. "pip install -U python-dotenv"
+3. "pip install -U requests"
+
 ## Bot Set Up
 
-1. Run the command "pip install -U discord.py" in your command line.
-2. Run the command "pip install -U python-dotenv" in your command line.
-3. Run the command "pip install -U requests" in your command line.
-4. Create a .env file with a token provided by one of the developers and put this text in it in this format: DISCORD_TOKEN=PROVIDED_TOKEN
-5. Navigate to the folder containing the bot in your command line.
-6. Run the command "python bot.py" in your command line to run the bot.
+1. Create a .env file with a token provided by one of the developers and put this text in it in this format: DISCORD_TOKEN=PROVIDED_TOKEN
+2. Navigate to the folder containing the bot in your command line.
+3. Run the command "python bot.py" in your command line to run the bot.
 
 If you are just running the bot on your computer, terminate using the Control key and C hotkey, otherwise terminate like you would any other program.
 
