@@ -39,6 +39,9 @@ class BendelBucks:
                 # List [User ID, Balance, Hourly, Daily, Weekly, endline]
                 split_line = line_data.split(',')
                 stored_id = split_line[0]
+                print(f"stored_id: {stored_id}")
+                print(f"user_id: {user_id}")
+
                 if str(stored_id) == str(user_id):
                     self.user_list = split_line
                     found_line = True
@@ -47,8 +50,9 @@ class BendelBucks:
                 line_data = f.readline()
                 # Remembering to position where cursor would be
                 line_byte = f.tell()
-                if not found_line:
-                    return
+            if not found_line:
+                return_string = "Invalid User"
+                return return_string
             # Adding balance
             stored_balance = int(self.user_list[1])
             stored_balance += to_add
