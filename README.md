@@ -22,6 +22,11 @@ If you are just running the bot on your computer, terminate using the Control ke
 **Currency System**
 - Use !hourly, !daily, !weekly to claim rewards.
 
+**React Roles**
+- React to a message with an emoji to assign yourself a role.
+- Use !roleset (Role Name) (msg id to react to) (Emoji) to configure.
+- Ex. !roleset dev 824395559791755374 :thumbsup:
+
 ## Planned Bot Features
 **Meme Delivery**
 - Bendel-Bot will share a random meme on command from their personal stash 
