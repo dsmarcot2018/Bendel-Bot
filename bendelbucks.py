@@ -1,12 +1,14 @@
 import constants
 from datetime import datetime, timedelta
 
+
 class BendelBucks:
     """Manage all functionality around Bendel Bucks."""
 
     def __init__(self):
         self.file = "bbdata.txt"
         self.user_list = ""
+        self.remaining_time = 0
 
     def create_user(self, user_id):
         with open(self.file, 'r') as f:
@@ -22,7 +24,7 @@ class BendelBucks:
             # User ID, Balance, Hourly, Daily, Weekly, endline
             f.write(f'{user_id},0,None,None,None,end\n')
 
-    def add_balance(self, user_id, to_add, *method):
+    def add_balance(self, user_id, to_add, *timeout):
         return_string = ""
         with open(self.file, 'r+') as f:
             # Line containing the user id
@@ -41,41 +43,40 @@ class BendelBucks:
                     self.user_list = split_line
                     found_line = True
                     break
+                # Getting line of user data from text file
                 line_data = f.readline()
+                # Remembering to position where cursor would be
                 line_byte = f.tell()
                 if not found_line:
                     return
+            # Adding balance
             stored_balance = int(self.user_list[1])
             stored_balance += to_add
             self.user_list[1] = str(stored_balance)
 
-            do_write = True
+            # Converting tuple into a string
+            for n in timeout:
+                timeout = n
+            # Checking if optional argument exists
+            if timeout:
+                if timeout == constants.HOURLY_TIMEOUT:
+                    do_write = self.verify_time(self.user_list[2], timeout)
+                elif timeout == constants.DAILY_TIMEOUT:
+                    do_write = self.verify_time(self.user_list[3], timeout)
+                elif timeout == constants.WEEKLY_TIMEOUT:
+                    do_write = self.verify_time(self.user_list[4], timeout)
+                if do_write:
+                    if timeout == constants.HOURLY_TIMEOUT:
+                        self.user_list[2] = datetime.now()
+                    elif timeout == constants.DAILY_TIMEOUT:
+                        self.user_list[3] = datetime.now()
+                    elif timeout == constants.WEEKLY_TIMEOUT:
+                        self.user_list[4] = datetime.now()
+            else:
+                do_write = True
 
-            # if method == "Hourly":
-            #     current_time = datetime.now()
-            #     if split_line[2] == "None":
-            #         current_bal = int(split_line[1])
-            #         current_bal += constants.DAILY_REWARD
-            #         split_line[1] = str(current_bal)
-            #         split_line[2] = str(current_time)
-            #         return_string = f"added {constants.DAILY_REWARD}"
-            #         do_write = True
-            #     else:
-            #         last_called = datetime.fromisoformat(split_line[2])
-            #         time_difference = current_time - last_called
-            #         if time_difference > constants.HOURLY_TIMEOUT:
-            #             current_bal = int(split_line[1])
-            #             current_bal += constants.DAILY_REWARD
-            #             split_line[1] = str(current_bal)
-            #             split_line[2] = str(current_time)
-            #             return_string = f"added {constants.DAILY_REWARD}"
-            #             do_write = True
-            #         else:
-            #             remaining_time = constants.HOURLY_TIMEOUT -\
-            #                              time_difference
-            #             return_string = f"must wait \
-            #             {round(remaining_time)}s"
-
+            # Writing to file
+            # The else only ever triggers due to not enough time between calls
             if do_write:
                 line = ""
                 for i in self.user_list:
@@ -83,19 +84,27 @@ class BendelBucks:
                 line = line[:-1]
                 f.seek(line_byte)
                 f.write(line)
+                # Message sent to discord
+                return_string = f"Added ${to_add}."
+            else:
+                # Message sent to discord
+                return_string = f"You must wait " \
+                                f"{round(self.remaining_time)}s to claim."
             return return_string
 
-    def edit_time_log(self, file_bytes, time_command):
-        return
+    def verify_time(self, last_called, time_out):
+        now_time = datetime.now()
 
-
-with open("bbdata.txt", 'r+') as f:
-    print(f.readline())
-    f.write("hello")
-
-bb = BendelBucks()
-
-bb.add_balance(819039754611326976, 100)
-
-with open("bbdata.txt", 'r+') as f:
-    print(f.readline())
+        if last_called == "None":
+            print("None reached")
+            return True
+        last_called = datetime.fromisoformat(last_called)
+        time_difference = now_time - last_called
+        seconds_passed = time_difference.total_seconds()
+        if seconds_passed > time_out:
+            print("Comparison Reached")
+            return True
+        else:
+            print("Else Reached")
+            self.remaining_time = time_out - seconds_passed
+            return False

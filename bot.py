@@ -96,9 +96,23 @@ async def roll(ctx, die: str):
 
     return
 
+
 @bot.command(name="hourly")
 async def hourly(ctx):
-    await ctx.send(bb.add_balance(ctx.author.id, 100, "Hourly"))
+    await ctx.send(bb.add_balance(ctx.author.id, constants.HOURLY_REWARD
+                                  , constants.HOURLY_TIMEOUT))
+
+
+@bot.command(name="daily")
+async def hourly(ctx):
+    await ctx.send(bb.add_balance(ctx.author.id, constants.DAILY_REWARD
+                                  , constants.DAILY_TIMEOUT))
+
+
+@bot.command(name="weekly")
+async def hourly(ctx):
+    await ctx.send(bb.add_balance(ctx.author.id, constants.WEEKLY_REWARD
+                                  ,constants.WEEKLY_TIMEOUT))
 
 bot.run(TOKEN)
 
