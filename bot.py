@@ -6,7 +6,6 @@ import random
 import getpass
 import bendelbucks
 import constants
-from datetime import datetime, timedelta
 import discord
 from dotenv import load_dotenv
 
