@@ -7,12 +7,17 @@
 * Joe Marchesini
 
 ## Pip Installs
-1. Run the command "pip install -U discord.py" in your command line.
-2. Run the command "pip install -U python-dotenv" in your command line.
-3. Run the command "pip install --upgrade youtube_dl" in your command line.
-4. Run the command "pip install PyNaCl" in your command line.
+
+In the command line you must run each of these pip installs for all the required packages:
+
+1. "pip install -U discord.py"
+2. "pip install -U python-dotenv"
+3. "pip install -U requests"
+4. "pip install --upgrade youtuble-dl"
+5. "pip install PyNaCl"
 
 ## Bot Set Up
+
 1. Open the bot folder as a project in PyCharm and then set up a virtual environment for your bot.
 2. Create a .env file with a token provided by one of the developers and put this text in it in this format: DISCORD_TOKEN=PROVIDED_TOKEN
 3. Navigate to the folder containing the bot in your command line.
@@ -44,6 +49,9 @@ If you are just running the bot on your computer, terminate using the Control ke
 - React to a message with an emoji to assign yourself a role.
 - Use !roleset (Role Name) (msg id to react to) (Emoji) to configure.
 - Ex. !roleset dev 824395559791755374 :thumbsup:
+
+**Meme Machine**
+- You can run the command !meme in chat and you will get a random image back from out github
 
 ## Planned Bot Features
 **Meme Delivery**
