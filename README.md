@@ -28,6 +28,7 @@ If you are just running the bot on your computer, terminate using the Control ke
 
 **Currency System**
 - Use !hourly, !daily, !weekly to claim rewards.
+- Use !bal to check balance.
 
 **React Roles**
 - React to a message with an emoji to assign yourself a role.
