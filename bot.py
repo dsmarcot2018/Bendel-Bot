@@ -4,6 +4,7 @@
 import os
 import random
 import getpass
+import bendelbucks
 import constants
 import requests
 
@@ -25,6 +26,8 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 
 # client = discord.Client()
 
+# Initializing BendelBucks class
+bb = bendelbucks.BendelBucks()
 
 # bot say's hi once joined
 @bot.event
@@ -54,7 +57,7 @@ async def on_ready():
 @bot.event
 async def on_member_join(member):
     print(f"{member.name} Joined the server")
-
+    bb.create_user(member.id)
     # list contains the possible welcome strings and @ mention
     welcome_message_list = ["Howdy " + member.mention,
                             "Welcome aboard " + member.mention,
@@ -98,7 +101,25 @@ async def roll(ctx, die: str):
 
     return
 
-  
+
+@bot.command(name="hourly")
+async def hourly(ctx):
+    await ctx.send(bb.add_balance(ctx.author.id, constants.HOURLY_REWARD
+                                  , constants.HOURLY_TIMEOUT))
+
+
+@bot.command(name="daily")
+async def hourly(ctx):
+    await ctx.send(bb.add_balance(ctx.author.id, constants.DAILY_REWARD
+                                  , constants.DAILY_TIMEOUT))
+
+
+@bot.command(name="weekly")
+async def hourly(ctx):
+    await ctx.send(bb.add_balance(ctx.author.id, constants.WEEKLY_REWARD
+                                  ,constants.WEEKLY_TIMEOUT))
+
+
 @bot.event
 async def on_member_join(member):
     """Bot will send new member server rules."""
@@ -146,8 +167,8 @@ async def role_set(ctx, role: discord.Role = None,
         bot.reaction_roles.append((role, msg, emoji))
     else:
         await ctx.send("Invalid Arguments")
-        
-        
+
+
 @bot.command(name="meme")
 async def meme_machine(ctx):
     # The number of images has to be set each time a new image is added.
@@ -167,5 +188,5 @@ async def meme_machine(ctx):
     else:
         await ctx.send(link)
 
-        
+
 bot.run(TOKEN)
