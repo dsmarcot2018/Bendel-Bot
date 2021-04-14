@@ -45,6 +45,9 @@ If you are just running the bot on your computer, terminate using the Control ke
   - !leave
     - Leaves the vc and stops the audio.
 
+**Currency System**
+- Use !hourly, !daily, !weekly to claim rewards.
+
 **React Roles**
 - React to a message with an emoji to assign yourself a role.
 - Use !roleset (Role Name) (msg id to react to) (Emoji) to configure.
@@ -57,8 +60,8 @@ If you are just running the bot on your computer, terminate using the Control ke
 **Meme Delivery**
 - Bendel-Bot will share a random meme on command from their personal stash 
 
-**User Currency Balance**
-- Each member of the server will be able to earn Bendel-Bucks(BBs) and have access to their Bendal-Balance where they can view how many BBs they have.
+**Future Currency Features**
+- !bal to see BBs
 - Members will be able to spend Bendel-Bucks on a number of different activities
 
 **Slot Machine**
