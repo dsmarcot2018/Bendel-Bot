@@ -32,7 +32,7 @@ bb = bendelbucks.BendelBucks()
 # bot say's hi once joined
 @bot.event
 async def send_joined_message():
-    channel = bot.get_channel(816385919019647016)
+    channel = bot.get_channel(809191274976247851)
     await channel.send("Bendel-Bot is online! (Brought online by:" +
                        getpass.getuser() + ")")
     await channel.send("What's up gamers?")
@@ -73,7 +73,7 @@ async def on_member_join(member):
                             member.mention + " is a Junkrat main"]
 
     # sets the channel to the welcome (general) channel
-    channel = bot.get_channel(816385919019647016)
+    channel = bot.get_channel(809191274976247851)
 
     # sets the message to one of the choices
     response = random.choice(welcome_message_list)
