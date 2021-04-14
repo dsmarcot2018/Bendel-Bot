@@ -5,6 +5,7 @@ import os
 import random
 import getpass
 import constants
+import requests
 
 import discord
 from dotenv import load_dotenv
@@ -145,6 +146,26 @@ async def role_set(ctx, role: discord.Role = None,
         bot.reaction_roles.append((role, msg, emoji))
     else:
         await ctx.send("Invalid Arguments")
+        
+        
+@bot.command(name="meme")
+async def meme_machine(ctx):
+    # The number of images has to be set each time a new image is added.
+    num_of_imgs = 38
+    # Picks a random number for the image
+    ran_pic = random.randint(1, num_of_imgs)
+    # This links to our github to retrieve the image
+    link = 'https://raw.githubusercontent.com/dsmarcot2018/Bendel-Bot/main/memes/' + str(ran_pic) + '.png'
+    # Checks to see if the image can be resolved, If not it will try again with the extension .jpg instead of .png
+    request = requests.get(link)
+    if request.status_code == 404:
+        link = 'https://raw.githubusercontent.com/dsmarcot2018/Bendel-Bot/main/memes/' + str(ran_pic) + '.jpg'
+        request = requests.get(link)
 
+    if request.status_code == 404:
+        await ctx.send("Could not resolve image: " + str(ran_pic))
+    else:
+        await ctx.send(link)
 
+        
 bot.run(TOKEN)
