@@ -17,12 +17,13 @@ class BendelBucks:
                 split_line = line_id.split(',')
                 stored_id = split_line[0]
                 if str(stored_id) == str(user_id):
+                    print("User already exists.")
                     return
                 line_id = f.readline()
 
         with open(self.file, 'a') as f:
             # User ID, Balance, Hourly, Daily, Weekly, endline
-            f.write(f'{user_id},0,None,None,None,end\n')
+            f.write(f'{user_id},0,None,None,None,\n')
 
     def add_balance(self, user_id, to_add, *timeout):
         return_string = ""
@@ -31,12 +32,14 @@ class BendelBucks:
             found_line = False
             # Has the allowed time passed
             do_write = False
+            # Index of the line
+            line_index = 0
             # Byte count of the start of the line of the current line
             line_byte = f.tell()
             # Line containing data of the user
             line_data = f.readline()
             while line_data:
-                # List [User ID, Balance, Hourly, Daily, Weekly, endline]
+                # List [User ID, Balance, Hourly, Daily, Weekly]
                 split_line = line_data.split(',')
                 stored_id = split_line[0]
                 print(f"stored_id: {stored_id}")
@@ -48,10 +51,13 @@ class BendelBucks:
                     break
                 # Getting line of user data from text file
                 line_data = f.readline()
+                # Increment line index
+                line_index += 1
                 # Remembering to position where cursor would be
                 line_byte = f.tell()
             if not found_line:
-                return_string = "Invalid User"
+                self.create_user(user_id)
+                return_string = "New User added, try command again."
                 return return_string
             # Adding balance
             stored_balance = int(self.user_list[1])
@@ -83,11 +89,22 @@ class BendelBucks:
             # The else only ever triggers due to not enough time between calls
             if do_write:
                 line = ""
+                # Format line
                 for i in self.user_list:
                     line += f"{i},"
                 line = line[:-1]
-                f.seek(line_byte)
-                f.write(line)
+                # Reset cursor position in file
+                f.seek(0)
+                # List of all lines in file
+                contents = f.readlines()
+                # Replacing line where it matches with user_id
+                contents[line_index] = line
+                # Converting list into string for writing
+                contents = "".join(contents)
+                # Reset cursor position in file
+                f.seek(0)
+                # Writing to file
+                f.write(contents)
                 # Message sent to discord
                 return_string = f"Added ${to_add}."
             else:
@@ -112,3 +129,17 @@ class BendelBucks:
             print("Else Reached")
             self.remaining_time = time_out - seconds_passed
             return False
+
+
+# with open("bbdata.txt", "r") as f:
+#     contents = f.readlines()
+#     print("Reading")
+#     print(contents)
+#     append = "164512645427232769,105,2021-04-14 01:39:34.370039,2021-04-14 01:39:15.478595,None,end"
+#     contents.append(append)
+#
+# with open("bbdata.txt", "w") as f:
+#     contents = "\n".join(contents)
+#     print("Writing")
+#     print(contents)
+#     f.write(contents)
