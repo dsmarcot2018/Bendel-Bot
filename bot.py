@@ -102,6 +102,11 @@ async def roll(ctx, die: str):
     return
 
 
+@bot.command(name="bal")
+async def bal(ctx):
+    await ctx.send(bb.balance(ctx.author.id))
+
+
 @bot.command(name="hourly")
 async def hourly(ctx):
     await ctx.send(bb.add_balance(ctx.author.id, constants.HOURLY_REWARD
@@ -109,23 +114,20 @@ async def hourly(ctx):
 
 
 @bot.command(name="daily")
-async def hourly(ctx):
+async def daily(ctx):
     await ctx.send(bb.add_balance(ctx.author.id, constants.DAILY_REWARD
                                   , constants.DAILY_TIMEOUT))
 
 
 @bot.command(name="weekly")
-async def hourly(ctx):
+async def weekly(ctx):
     await ctx.send(bb.add_balance(ctx.author.id, constants.WEEKLY_REWARD
                                   ,constants.WEEKLY_TIMEOUT))
 
-
-@bot.event
-async def on_member_join(member):
-    """Bot will send new member server rules."""
-
-    user = bot.get_user(member.id)
-    await user.send(constants.RULES_MSG)
+# Used for testing
+# @bot.command(name="remove")
+# async def remove(ctx):
+#     await ctx.send(bb.remove_balance(ctx.author.id, 100))
 
 
 @bot.event
