@@ -58,11 +58,7 @@ If you are just running the bot on your computer, terminate using the Control ke
 - You can run the command !meme in chat and you will get a random image back from out github
 
 ## Planned Bot Features
-**Meme Delivery**
-- Bendel-Bot will share a random meme on command from their personal stash 
-
 **Future Currency Features**
-- !bal to see BBs
 - Members will be able to spend Bendel-Bucks on a number of different activities
 
 **Slot Machine**
