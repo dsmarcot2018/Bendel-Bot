@@ -148,19 +148,23 @@ async def role_set(ctx, role: discord.Role = None,
 
 @bot.command(name="slot")
 async def slot_pull(ctx, command: str):
-    #update to emojis
-    mult_dict = {
-        1: "1",
-        2: "2",
-        3: "3",
-        4: "4",
-        5: "5"
+    emoji_mult_dict = {
+        1: "💣",
+        2: "🎲",
+        3: "❤",
+        4: "🍒",
+        5: "💎"
     }
 
     if command.casefold() == "help":
         await ctx.send("Use the slot machine with !slot BET\n" +
-                       "Where BET is the BendelBucks you want to wager\n" +
-                       "Then the emoji multiplier values")
+                        "Where BET is the BendelBucks you want to wager\n" +
+                        "Multiplier values:\n" +
+                        "1: 💣,\n" +
+                        "2: 🎲,\n" +
+                        "3: ❤,\n" +
+                        "4: 🍒,\n" +
+                        "5: 💎")
         return
 
     try:
@@ -175,7 +179,7 @@ async def slot_pull(ctx, command: str):
     col2 = random.randint(1, 5)
     col3 = random.randint(1, 5)
 
-    await ctx.send('|' + mult_dict[col1] + '|' + mult_dict[col2] + '|' + mult_dict[col3] + '|\n')
+    await ctx.send('|' + emoji_mult_dict[col1] + '|' + emoji_mult_dict[col2] + '|' + emoji_mult_dict[col3] + '|\n')
 
     if col1 == col2 and col1 == col3:
         winnings = col1 * int(command)
