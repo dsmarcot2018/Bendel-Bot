@@ -7,5 +7,5 @@ HOURLY_TIMEOUT = 3600
 DAILY_TIMEOUT = 86400
 WEEKLY_TIMEOUT = 604800
 
-# Misc contants
+# Misc constants
 RULES_MSG = "Don't be mean! Have Fun!"
