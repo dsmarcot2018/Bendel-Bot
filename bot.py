@@ -6,12 +6,15 @@ import random
 import getpass
 import bendelbucks
 import constants
+import youtube_dl
 import requests
+
 
 import discord
 from dotenv import load_dotenv
 
 from discord.ext import commands
+
 
 intents = discord.Intents.default()
 intents.members = True
@@ -22,7 +25,6 @@ GUILD = os.getenv('DISCORD_GUILD')
 # GENERAL_TXT_CHANNEL = os.getenv('DISCORD_GENERAL_CHANNEL_ID')
 
 bot = commands.Bot(command_prefix='!', intents=intents)
-
 
 # client = discord.Client()
 
@@ -40,7 +42,9 @@ async def send_joined_message():
 
 @bot.event
 async def on_ready():
-    guild = discord.utils.get(bot.guilds, name=GUILD)
+    for guild in bot.guilds:
+        if guild.name == GUILD:
+            break
     print(
         f'{bot.user.name} is connected to the following guild:\n'
         f'{guild.name}(id: {guild.id})'
@@ -129,6 +133,94 @@ async def weekly(ctx):
 # async def remove(ctx):
 #     await ctx.send(bb.remove_balance(ctx.author.id, 100))
 
+@bot.event
+async def on_member_join(member):
+    """Bot will send new member server rules."""
+
+# Plays music provided by the user.
+# example !play youtube_link vc
+# @param youtube_link - A link to a youtube video that you would like
+#        to play through the bot.
+# @param vc - The voice channel you would like the bot to join.
+@bot.command()
+async def play(ctx, url : str, channel):
+    song_there = os.path.isfile("song.mp3")
+    try:
+        if song_there:
+            os.remove("song.mp3")
+    except PermissionError:
+        await ctx.send("Wait for the current playing music to end or use the 'stop' command")
+        return
+
+    voice_channel = discord.utils.get(ctx.guild.voice_channels, name=channel)
+
+    try:
+        await voice_channel.connect()
+    except discord.errors.ClientException:
+        pass
+
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
+    }
+    ydl = youtube_dl.YoutubeDL(ydl_opts)
+    ydl.download([url])
+    for file in os.listdir("./"):
+        if file.endswith(".mp3"):
+            os.rename(file, "song.mp3")
+    voice.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source="song.mp3"))
+
+
+# Leaves the voice channel it is connected to.
+# Only leaves if it is connected and will send an error message if not.
+@bot.command()
+async def leave(ctx):
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    try:
+        await voice.disconnect()
+    except AttributeError:
+        await ctx.send("Bot is not connected to a voice channel.")
+
+
+# Pauses the audio that is currently playing.
+# Only pauses if it is connected and playing and will send an error message if not.
+@bot.command()
+async def pause(ctx):
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    try:
+        voice.pause()
+    except AttributeError:
+        await ctx.send("Bot cannot be paused at this moment.")
+
+
+# Resumes paused audio.
+# Only resumes if it is connected and paused and will send an error message if not.
+@bot.command()
+async def resume(ctx):
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    try:
+        voice.resume()
+    except AttributeError:
+        await ctx.send("Bot cannot be resumed at this moment.")
+
+
+# Stops the audio.
+# Only stops if it is connected and will send an error message if not.
+@bot.command()
+async def stop(ctx):
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+
+    try:
+        voice.stop()
+    except AttributeError:
+        await ctx.send("Bot cannot be stopped at this moment.")
+        
 
 @bot.event
 async def on_raw_reaction_add(payload):
