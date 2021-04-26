@@ -137,9 +137,9 @@ async def weekly(ctx):
 #     await ctx.send(bb.remove_balance(ctx.author.id, 100))
 
 
-@bot.event
-async def on_member_join(member):
-    """Bot will send new member server rules."""
+# @bot.event
+# async def on_member_join(member):
+#   """Bot will send new member server rules."""
 
 
 # Plays music provided by the user.
