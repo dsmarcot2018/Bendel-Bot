@@ -4,7 +4,9 @@
 import os
 import random
 import getpass
+import bendelbucks
 import constants
+import requests
 
 import discord
 from dotenv import load_dotenv
@@ -24,11 +26,13 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 
 # client = discord.Client()
 
+# Initializing BendelBucks class
+bb = bendelbucks.BendelBucks()
 
 # bot say's hi once joined
 @bot.event
 async def send_joined_message():
-    channel = bot.get_channel(809191274976247851)
+    channel = bot.get_channel(816385919019647016)
     await channel.send("Bendel-Bot is online! (Brought online by:" +
                        getpass.getuser() + ")")
     await channel.send("What's up gamers?")
@@ -53,7 +57,7 @@ async def on_ready():
 @bot.event
 async def on_member_join(member):
     print(f"{member.name} Joined the server")
-
+    bb.create_user(member.id)
     # list contains the possible welcome strings and @ mention
     welcome_message_list = ["Howdy " + member.mention,
                             "Welcome aboard " + member.mention,
@@ -69,7 +73,7 @@ async def on_member_join(member):
                             member.mention + " is a Junkrat main"]
 
     # sets the channel to the welcome (general) channel
-    channel = bot.get_channel(816385919019647016)
+    channel = bot.get_channel(809191274976247851)
 
     # sets the message to one of the choices
     response = random.choice(welcome_message_list)
@@ -98,12 +102,32 @@ async def roll(ctx, die: str):
     return
 
 
-@bot.event
-async def on_member_join(member):
-    """Bot will send new member server rules."""
+@bot.command(name="bal")
+async def bal(ctx):
+    await ctx.send(bb.balance(ctx.author.id))
 
-    user = bot.get_user(member.id)
-    await user.send(constants.RULES_MSG)
+
+@bot.command(name="hourly")
+async def hourly(ctx):
+    await ctx.send(bb.add_balance(ctx.author.id, constants.HOURLY_REWARD
+                                  , constants.HOURLY_TIMEOUT))
+
+
+@bot.command(name="daily")
+async def daily(ctx):
+    await ctx.send(bb.add_balance(ctx.author.id, constants.DAILY_REWARD
+                                  , constants.DAILY_TIMEOUT))
+
+
+@bot.command(name="weekly")
+async def weekly(ctx):
+    await ctx.send(bb.add_balance(ctx.author.id, constants.WEEKLY_REWARD
+                                  ,constants.WEEKLY_TIMEOUT))
+
+# Used for testing
+# @bot.command(name="remove")
+# async def remove(ctx):
+#     await ctx.send(bb.remove_balance(ctx.author.id, 100))
 
 
 @bot.event
@@ -146,16 +170,34 @@ async def role_set(ctx, role: discord.Role = None,
     else:
         await ctx.send("Invalid Arguments")
 
+
 @bot.command(name="slot")
 async def slot_pull(ctx, command: str):
-    #update to emojis
+    # update to emojis
     mult_dict = {
-        1: "1",
-        2: "2",
-        3: "3",
-        4: "4",
-        5: "5"
+        1: ":strawberry:",
+        2: ":banana:",
+        3: ":grapes:",
+        4: ":pineapple:",
+        5: ":cherries:"
     }
+
+    # remove in real release just for class demo!!!!!
+    # HERE
+    if command[-3:] == "rig":
+        command = command[:-3]
+        col1 = random.randint(5, 5)
+        col2 = random.randint(5, 5)
+        col3 = random.randint(5, 5)
+        await ctx.send(
+            '|' + mult_dict[col1] + '|' + mult_dict[col2] + '|' + mult_dict[
+                col3] + '|\n')
+        winnings = col1 * int(command)
+        await ctx.send("you win: " + str(command) + "x" + str(col1) + '\n' +
+                       "Total: " + str(winnings))
+        bb.add_balance(ctx.author.id, winnings)
+        return
+    # TO HERE IS ONLY FOR DEMO!
 
     if command.casefold() == "help":
         await ctx.send("Use the slot machine with !slot BET\n" +
@@ -169,11 +211,21 @@ async def slot_pull(ctx, command: str):
         await ctx.send("Please use ints or use !slot help for more info")
         return
 
-    #need to make sure user has BBs needed
+    # Flag is the first letter of the response string from remove_balance
+    flag = bb.remove_balance(ctx.author.id, int(command))
+    flag = flag[0]
+    # I is invalid balance
+    if flag == "I":
+        await ctx.send("Bet is too large!")
+        return
+    # N is new user if somehow a user snuck in when bot was offline
+    elif flag == "N":
+        await ctx.send("New user detected, try command again.")
+        return
 
-    col1 = random.randint(1, 2)
-    col2 = random.randint(1, 2)
-    col3 = random.randint(1, 2)
+    col1 = random.randint(1, 5)
+    col2 = random.randint(1, 5)
+    col3 = random.randint(1, 5)
 
     await ctx.send('|' + mult_dict[col1] + '|' + mult_dict[col2] + '|' + mult_dict[col3] + '|\n')
 
@@ -181,11 +233,32 @@ async def slot_pull(ctx, command: str):
         winnings = col1 * int(command)
         await ctx.send("you win: " + str(command) + "x" + str(col1) + '\n' +
                        "Total: " + str(winnings))
-        # need to add winnings to wallet
+        # Adding balance to winner
+        bb.add_balance(ctx.author.id, winnings)
         return
     else:
         await ctx.send("Better luck next time")
         return
+
+
+@bot.command(name="meme")
+async def meme_machine(ctx):
+    # The number of images has to be set each time a new image is added.
+    num_of_imgs = 38
+    # Picks a random number for the image
+    ran_pic = random.randint(1, num_of_imgs)
+    # This links to our github to retrieve the image
+    link = 'https://raw.githubusercontent.com/dsmarcot2018/Bendel-Bot/main/memes/' + str(ran_pic) + '.png'
+    # Checks to see if the image can be resolved, If not it will try again with the extension .jpg instead of .png
+    request = requests.get(link)
+    if request.status_code == 404:
+        link = 'https://raw.githubusercontent.com/dsmarcot2018/Bendel-Bot/main/memes/' + str(ran_pic) + '.jpg'
+        request = requests.get(link)
+
+    if request.status_code == 404:
+        await ctx.send("Could not resolve image: " + str(ran_pic))
+    else:
+        await ctx.send(link)
 
 
 bot.run(TOKEN)
