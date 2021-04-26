@@ -5,12 +5,12 @@ import os
 import random
 import getpass
 import youtube_dl
+import asyncio
+import time
 
 import discord
 from dotenv import load_dotenv
-
 from discord.ext import commands
-
 
 intents = discord.Intents.default()
 intents.members = True
@@ -21,6 +21,8 @@ GUILD = os.getenv('DISCORD_GUILD')
 # GENERAL_TXT_CHANNEL = os.getenv('DISCORD_GENERAL_CHANNEL_ID')
 
 bot = commands.Bot(command_prefix='!', intents=intents)
+
+music_queue = []
 
 # client = discord.Client()
 
@@ -102,25 +104,30 @@ async def roll(ctx, die: str):
 # @param youtube_link - A link to a youtube video that you would like
 #        to play through the bot.
 # @param vc - The voice channel you would like the bot to join.
-@bot.command()
-async def play(ctx, url : str, channel):
-    song_there = os.path.isfile("song.mp3")
-    try:
-        if song_there:
-            os.remove("song.mp3")
-    except PermissionError:
-        await ctx.send("Wait for the current playing music to end or use the 'stop' command")
-        return
+@bot.command(name="play")
+async def play(ctx, url : str):
+    music_queue.append(url)
+    print(music_queue)
+    channel = ctx.author.voice.channel
 
     voice_channel = discord.utils.get(ctx.guild.voice_channels, name=channel)
 
     try:
-        await voice_channel.connect()
+        await channel.connect()
     except discord.errors.ClientException:
         pass
 
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
 
+    if not voice.is_playing():
+        play_next(ctx)
+        await ctx.send("Now playing...")
+    else:
+        await ctx.send('Song queued')
+
+
+def play_next(ctx):
+    vc = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     ydl_opts = {
         'format': 'bestaudio/best',
         'postprocessors': [{
@@ -129,12 +136,61 @@ async def play(ctx, url : str, channel):
             'preferredquality': '192',
         }],
     }
-    ydl = youtube_dl.YoutubeDL(ydl_opts)
-    ydl.download([url])
-    for file in os.listdir("./"):
-        if file.endswith(".mp3"):
-            os.rename(file, "song.mp3")
-    voice.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source="song.mp3"))
+    if len(music_queue) >= 1:
+        source = None
+        old_download = False
+        url_split = music_queue[0].split("=")
+        final_split = url_split[1].split("&")
+        print(final_split[0])
+        for file in os.listdir("./"):
+            if file.endswith(final_split[0] + ".mp3"):
+                old_download = True
+
+        if not old_download:
+            ydl = youtube_dl.YoutubeDL(ydl_opts)
+            ydl.download([music_queue[0]])
+
+        for file in os.listdir("./"):
+            if file.endswith(final_split[0] + ".mp3"):
+                source = file
+
+        del music_queue[0]
+        vc.play(discord.FFmpegPCMAudio(source=source), after=lambda e: play_next(ctx))
+    else:
+        asyncio.run_coroutine_threadsafe(ctx.send("No more songs in queue."), bot.loop)
+        time.sleep(30)  # wait 1 minute and 30 seconds
+        if not vc.is_playing():
+            asyncio.run_coroutine_threadsafe(vc.disconnect(), bot.loop)
+
+
+@bot.command()
+async def dequeue(ctx, num):
+    try:
+        music_queue.pop(int(num)-1)
+        await ctx.send('Song removed from queue')
+    except IndexError:
+        await ctx.send('There is no song at that queue position')
+
+
+@bot.command()
+async def queue(ctx):
+    if len(music_queue) >= 1:
+        counter = 1
+        for item in music_queue:
+            await ctx.send('**' + str(counter) + ':** ' + item + '\n')
+            counter += 1
+    else:
+        await ctx.send('There are no songs in the queue')
+
+
+@bot.command()
+async def skip(ctx):
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+
+    try:
+        voice.stop()
+    except AttributeError:
+        pass
 
 
 # Leaves the voice channel it is connected to.
@@ -142,6 +198,8 @@ async def play(ctx, url : str, channel):
 @bot.command()
 async def leave(ctx):
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+
+    music_queue.clear()
     try:
         await voice.disconnect()
     except AttributeError:
@@ -175,6 +233,8 @@ async def resume(ctx):
 @bot.command()
 async def stop(ctx):
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+
+    music_queue.clear()
 
     try:
         voice.stop()
