@@ -32,7 +32,7 @@ If you are just running the bot on your computer, terminate using the Control ke
 **Music**
 - Plays music through the bot using youtube-dl
 - Commands
-  - !play <youtube-link>
+  - !play youtube-link
     - @param youtube-link - A link to the youtube video that you would like to play.
     - Plays a youtube link's audio through the bot.
     - Queues the song if one is already playing.
@@ -46,11 +46,12 @@ If you are just running the bot on your computer, terminate using the Control ke
     - Leaves the vc and stops the audio.
   - !queue
     - Lists out the currently queued songs.
-  - !dequeue <song-position>
+  - !dequeue song-position
+    - @param song-position - The position in the queue of the song you would like to remove.
     - Removes a song from the queue.
   - !skip
     - Skips the currently playing song.
-  - !queue_first <youtube-link>
+  - !queue_first youtube-link
     - @param youtube-link - A link to the youtube video that you would like to play.
     - Costs 100 Bendel-Bucks to use this function.
     - Puts the requested song at the front of the queue.
