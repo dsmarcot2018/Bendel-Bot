@@ -382,7 +382,7 @@ async def slot_pull(ctx, command: str):
     try:
         int(command)
     except ValueError:
-        await ctx.send("Please use ints or use !slot help for more info")
+        await ctx.send(">>> Please use ints or use !slot help for more info")
         return
 
     # Flag is the first letter of the response string from remove_balance
@@ -390,28 +390,28 @@ async def slot_pull(ctx, command: str):
     flag = flag[0]
     # I is invalid balance
     if flag == "I":
-        await ctx.send("Bet is too large!")
+        await ctx.send(">>> Bet is too large!")
         return
     # N is new user if somehow a user snuck in when bot was offline
     elif flag == "N":
-        await ctx.send("New user detected, try command again.")
+        await ctx.send(">>> New user detected, try command again.")
         return
 
     col1 = random.randint(1, 5)
     col2 = random.randint(1, 5)
     col3 = random.randint(1, 5)
 
-    await ctx.send('|' + emoji_mult_dict[col1] + '|' + emoji_mult_dict[col2] + '|' + emoji_mult_dict[col3] + '|\n')
+    await ctx.send('>>> |' + emoji_mult_dict[col1] + '|' + emoji_mult_dict[col2] + '|' + emoji_mult_dict[col3] + '|\n')
 
     if col1 == col2 and col1 == col3:
         winnings = col1 * int(command)
-        await ctx.send("you win: " + str(command) + "x" + str(col1) + '\n' +
+        await ctx.send(">>> you win: " + str(command) + "x" + str(col1) + '\n' +
                        "Total: " + str(winnings))
         # Adding balance to winner
         bb.add_balance(ctx.author.id, winnings)
         return
     else:
-        await ctx.send("Better luck next time")
+        await ctx.send(">>> Better luck next time")
         return
 
 
