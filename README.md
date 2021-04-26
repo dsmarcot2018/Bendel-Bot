@@ -66,7 +66,10 @@ If you are just running the bot on your computer, terminate using the Control ke
 - Ex. !roleset dev 824395559791755374 :thumbsup:
 
 **Meme Machine**
-- You can run the command !meme in chat and you will get a random image back from out github.
+- You can run the command !meme in chat and you will get a random image back from out github, it holds the last 5 memes so they don't repeat.
+
+**Dogo Machine**
+- You can run the command !dogo in chat and you will get a random dog image from an online api.
 
 ## Planned Bot Features
 **Future Currency Features**
