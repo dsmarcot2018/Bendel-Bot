@@ -79,7 +79,7 @@ async def on_member_join(member):
                             ">>> " + member.mention + " is a Junkrat main"]
 
     # sets the channel to the welcome (general) channel
-    channel = bot.get_channel(809191274976247851)
+    channel = bot.get_channel(816385919019647016)
 
     # sets the message to one of the choices
     response = random.choice(welcome_message_list)
@@ -295,6 +295,8 @@ async def stop(ctx):
         voice.stop()
         await ctx.send(">>> Music stopped")
     except AttributeError:
+        await ctx.send("Bot cannot be stopped at this moment.")
+
         await ctx.send(">>> Bot cannot be stopped at this moment")
         
 
@@ -337,6 +339,80 @@ async def role_set(ctx, role: discord.Role = None,
         bot.reaction_roles.append((role, msg, emoji))
     else:
         await ctx.send(">>> Invalid Arguments")
+
+
+@bot.command(name="slot")
+async def slot_pull(ctx, command: str):
+    emoji_mult_dict = {
+        1: "💣",
+        2: "🎲",
+        3: "❤",
+        4: "🍒",
+        5: "💎"
+    }
+
+    # remove in real release just for class demo!!!!!
+    # HERE
+    if command[-3:] == "rig":
+        command = command[:-3]
+        col1 = random.randint(5, 5)
+        col2 = random.randint(5, 5)
+        col3 = random.randint(5, 5)
+        await ctx.send(
+            '|' + emoji_mult_dict[col1] + '|' + emoji_mult_dict[col2] + '|' + emoji_mult_dict[
+                col3] + '|\n')
+        winnings = col1 * int(command)
+        await ctx.send("you win: " + str(command) + "x" + str(col1) + '\n' +
+                       "Total: " + str(winnings))
+        bb.add_balance(ctx.author.id, winnings)
+        return
+    # TO HERE IS ONLY FOR DEMO!
+
+    if command.casefold() == "help":
+        await ctx.send("Use the slot machine with !slot BET\n" +
+                        "Where BET is the BendelBucks you want to wager\n" +
+                        "Multiplier values:\n" +
+                        "1: 💣,\n" +
+                        "2: 🎲,\n" +
+                        "3: ❤,\n" +
+                        "4: 🍒,\n" +
+                        "5: 💎")
+        return
+
+    try:
+        int(command)
+    except ValueError:
+        await ctx.send("Please use ints or use !slot help for more info")
+        return
+
+    # Flag is the first letter of the response string from remove_balance
+    flag = bb.remove_balance(ctx.author.id, int(command))
+    flag = flag[0]
+    # I is invalid balance
+    if flag == "I":
+        await ctx.send("Bet is too large!")
+        return
+    # N is new user if somehow a user snuck in when bot was offline
+    elif flag == "N":
+        await ctx.send("New user detected, try command again.")
+        return
+
+    col1 = random.randint(1, 5)
+    col2 = random.randint(1, 5)
+    col3 = random.randint(1, 5)
+
+    await ctx.send('|' + emoji_mult_dict[col1] + '|' + emoji_mult_dict[col2] + '|' + emoji_mult_dict[col3] + '|\n')
+
+    if col1 == col2 and col1 == col3:
+        winnings = col1 * int(command)
+        await ctx.send("you win: " + str(command) + "x" + str(col1) + '\n' +
+                       "Total: " + str(winnings))
+        # Adding balance to winner
+        bb.add_balance(ctx.author.id, winnings)
+        return
+    else:
+        await ctx.send("Better luck next time")
+        return
 
 
 previous_images = []
