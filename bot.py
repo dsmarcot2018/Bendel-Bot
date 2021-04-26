@@ -171,9 +171,9 @@ async def slot_pull(ctx, command: str):
 
     #need to make sure user has BBs needed
 
-    col1 = random.randint(1, 5)
-    col2 = random.randint(1, 5)
-    col3 = random.randint(1, 5)
+    col1 = random.randint(1, 2)
+    col2 = random.randint(1, 2)
+    col3 = random.randint(1, 2)
 
     await ctx.send('|' + mult_dict[col1] + '|' + mult_dict[col2] + '|' + mult_dict[col3] + '|\n')
 
