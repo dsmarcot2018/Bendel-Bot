@@ -32,10 +32,10 @@ If you are just running the bot on your computer, terminate using the Control ke
 **Music**
 - Plays music through the bot using youtube-dl
 - Commands
-  - !play youtube-link vc
+  - !play <youtube-link>
     - @param youtube-link - A link to the youtube video that you would like to play.
-    - @param vc - The exact name of the vc you would like the bot to join.
     - Plays a youtube link's audio through the bot.
+    - Queues the song if one is already playing.
   - !pause
     - Pauses the audio.
   - !resume
@@ -44,6 +44,16 @@ If you are just running the bot on your computer, terminate using the Control ke
     - Stops the audio, but leaves the bot in the channel.
   - !leave
     - Leaves the vc and stops the audio.
+  - !queue
+    - Lists out the currently queued songs.
+  - !dequeue <song-position>
+    - Removes a song from the queue.
+  - !skip
+    - Skips the currently playing song.
+  - !queue_first <youtube-link>
+    - @param youtube-link - A link to the youtube video that you would like to play.
+    - Costs 100 Bendel-Bucks to use this function.
+    - Puts the requested song at the front of the queue.
 
 **Currency System**
 - Use !hourly, !daily, !weekly to claim rewards.
@@ -55,19 +65,18 @@ If you are just running the bot on your computer, terminate using the Control ke
 - Ex. !roleset dev 824395559791755374 :thumbsup:
 
 **Meme Machine**
-- You can run the command !meme in chat and you will get a random image back from out github
+- You can run the command !meme in chat and you will get a random image back from out github.
 
 ## Planned Bot Features
 **Future Currency Features**
-- Members will be able to spend Bendel-Bucks on a number of different activities
+- Members will be able to spend Bendel-Bucks on a number of different activities.
 
 **Slot Machine**
-- One of those planned activities is Bendel-Bot's slot machine where server members will be able to spend BBs to give it a spin to try and win more BBs
+- One of those planned activities is Bendel-Bot's slot machine where server members will be able to spend BBs to give it a spin to try and win more BBs.
 
 **Music**
-- Adding a queuing feature.
-- Removing the vc param for !play and making the bot join the vc of the user who used the command.
+- Making it so only the user that requested a song can dequeue it or the one that would like to dequeue it must pay some BBs.
 
 ## Features that are less certain to be featured
 **Bendel-Buck Leaderboard**
-- Run a command to see the top Bendel-Buck earners on the server
+- Run a command to see the top Bendel-Buck earners on the server.
