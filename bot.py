@@ -339,12 +339,26 @@ async def role_set(ctx, role: discord.Role = None,
         await ctx.send(">>> Invalid Arguments")
 
 
+previous_images = []
 @bot.command(name="meme")
 async def meme_machine(ctx):
     # The number of images has to be set each time a new image is added.
     num_of_imgs = 46
     # Picks a random number for the image
-    ran_pic = random.randint(1, num_of_imgs)
+    while True:
+        repeate = False
+        ran_pic = random.randint(1, num_of_imgs)
+        for prev in previous_images:
+            if ran_pic == prev:
+                repeate = True
+        if not repeate:
+            break
+    # Sets previous_image to last image so it isn't repeted.
+    if len(previous_images) == 5:
+        del previous_images[0]
+        previous_images.append(ran_pic)
+    else:
+        previous_images.append(ran_pic)
     # This links to our github to retrieve the image
     link = 'https://raw.githubusercontent.com/dsmarcot2018/Bendel-Bot/main/memes/' + str(ran_pic) + '.png'
     # Checks to see if the image can be resolved, If not it will try again with the extension .jpg instead of .png
@@ -354,9 +368,21 @@ async def meme_machine(ctx):
         request = requests.get(link)
 
     if request.status_code == 404:
-        await ctx.send(">>> Could not resolve image: " + str(ran_pic))
+        await ctx.send("Could not resolve image: " + str(ran_pic))
     else:
         await ctx.send(link)
+
+
+@bot.command(name="dogo")
+async def dogo_machine(ctx):
+    # URL to get random dog images
+    url = "https://dog.ceo/api/breeds/image/random"
+    r = requests.get(url)
+    # parsing Json
+    url_to_parse = r.json()
+    url_parsed = str(url_to_parse).split("'")
+    url = url_parsed[3]
+    await ctx.send(url)
 
 
 bot.run(TOKEN)
