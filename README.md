@@ -60,6 +60,12 @@ If you are just running the bot on your computer, terminate using the Control ke
 - Use !hourly, !daily, !weekly to claim rewards.
 - Use !bal to check balance.
 
+**Slot Machine**
+- Bendel-Bot's slot machine where server members will be able to spend BBs to give it a spin to try and win more BBs.
+- !slot bet-money
+  - @param bet-money - The amount of BBs you would like to bet at the slot machine.
+  - Rolls 3 random slots and if they all match the user wins back extra BB's
+
 **React Roles**
 - React to a message with an emoji to assign yourself a role.
 - Use !roleset (Role Name) (msg id to react to) (Emoji) to configure.
@@ -74,9 +80,6 @@ If you are just running the bot on your computer, terminate using the Control ke
 ## Planned Bot Features
 **Future Currency Features**
 - Members will be able to spend Bendel-Bucks on a number of different activities.
-
-**Slot Machine**
-- One of those planned activities is Bendel-Bot's slot machine where server members will be able to spend BBs to give it a spin to try and win more BBs.
 
 **Music**
 - Making it so only the user that requested a song can dequeue it or the one that would like to dequeue it must pay some BBs.
