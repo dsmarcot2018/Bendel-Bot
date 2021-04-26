@@ -6,7 +6,7 @@ import random
 import getpass
 import bendelbucks
 import constants
-import youtube_dl
+# import youtube_dl
 import requests
 
 
@@ -14,7 +14,6 @@ import discord
 from dotenv import load_dotenv
 
 from discord.ext import commands
-
 
 intents = discord.Intents.default()
 intents.members = True
@@ -34,7 +33,7 @@ bb = bendelbucks.BendelBucks()
 # bot say's hi once joined
 @bot.event
 async def send_joined_message():
-    channel = bot.get_channel(816385919019647016)
+    channel = bot.get_channel(809191274976247851)
     await channel.send("Bendel-Bot is online! (Brought online by:" +
                        getpass.getuser() + ")")
     await channel.send("What's up gamers?")
@@ -77,7 +76,7 @@ async def on_member_join(member):
                             member.mention + " is a Junkrat main"]
 
     # sets the channel to the welcome (general) channel
-    channel = bot.get_channel(809191274976247851)
+    channel = bot.get_channel(816385919019647016)
 
     # sets the message to one of the choices
     response = random.choice(welcome_message_list)
@@ -220,7 +219,7 @@ async def stop(ctx):
         voice.stop()
     except AttributeError:
         await ctx.send("Bot cannot be stopped at this moment.")
-        
+
 
 @bot.event
 async def on_raw_reaction_add(payload):
@@ -265,13 +264,12 @@ async def role_set(ctx, role: discord.Role = None,
 
 @bot.command(name="slot")
 async def slot_pull(ctx, command: str):
-    # update to emojis
-    mult_dict = {
-        1: ":strawberry:",
-        2: ":banana:",
-        3: ":grapes:",
-        4: ":pineapple:",
-        5: ":cherries:"
+    emoji_mult_dict = {
+        1: "💣",
+        2: "🎲",
+        3: "❤",
+        4: "🍒",
+        5: "💎"
     }
 
     # remove in real release just for class demo!!!!!
@@ -282,7 +280,7 @@ async def slot_pull(ctx, command: str):
         col2 = random.randint(5, 5)
         col3 = random.randint(5, 5)
         await ctx.send(
-            '|' + mult_dict[col1] + '|' + mult_dict[col2] + '|' + mult_dict[
+            '|' + emoji_mult_dict[col1] + '|' + emoji_mult_dict[col2] + '|' + emoji_mult_dict[
                 col3] + '|\n')
         winnings = col1 * int(command)
         await ctx.send("you win: " + str(command) + "x" + str(col1) + '\n' +
@@ -293,8 +291,13 @@ async def slot_pull(ctx, command: str):
 
     if command.casefold() == "help":
         await ctx.send("Use the slot machine with !slot BET\n" +
-                       "Where BET is the BendelBucks you want to wager\n" +
-                       "Then the emoji multiplier values")
+                        "Where BET is the BendelBucks you want to wager\n" +
+                        "Multiplier values:\n" +
+                        "1: 💣,\n" +
+                        "2: 🎲,\n" +
+                        "3: ❤,\n" +
+                        "4: 🍒,\n" +
+                        "5: 💎")
         return
 
     try:
@@ -319,7 +322,7 @@ async def slot_pull(ctx, command: str):
     col2 = random.randint(1, 5)
     col3 = random.randint(1, 5)
 
-    await ctx.send('|' + mult_dict[col1] + '|' + mult_dict[col2] + '|' + mult_dict[col3] + '|\n')
+    await ctx.send('|' + emoji_mult_dict[col1] + '|' + emoji_mult_dict[col2] + '|' + emoji_mult_dict[col3] + '|\n')
 
     if col1 == col2 and col1 == col3:
         winnings = col1 * int(command)

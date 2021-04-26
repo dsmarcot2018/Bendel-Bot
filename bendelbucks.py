@@ -79,6 +79,7 @@ class BendelBucks:
                 # Replacing line where it matches with user_id
                 contents[line_index] = line
                 # Converting list into string for writing
+                contents = "".join(contents)
                 # Reset cursor position in file
                 f.seek(0)
                 # Writing to file
