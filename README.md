@@ -13,7 +13,7 @@ In the command line you must run each of these pip installs for all the required
 1. "pip install -U discord.py"
 2. "pip install -U python-dotenv"
 3. "pip install -U requests"
-4. "pip install --upgrade youtuble-dl"
+4. "pip install --upgrade youtube-dl"
 5. "pip install PyNaCl"
 
 ## Bot Set Up
