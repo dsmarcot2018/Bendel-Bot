@@ -6,7 +6,7 @@ import random
 import getpass
 import bendelbucks
 import constants
-# import youtube_dl
+import youtube_dl
 import requests
 
 
